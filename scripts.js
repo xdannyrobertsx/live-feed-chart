@@ -9,7 +9,7 @@ const newChart =  () => {
 
 // data fetch and cleanup
 const url =
-  "https://thrillshare-cmsv2.services.thrillshare.com/api/v2/s/108979/live_feeds";
+  "https://thrillshare-cmsv2.services.thrillshare.com/api/v2/s/108979/live_feeds?page_size=100";
 
 const fetchData = async (endpoint) => {
   const res = await fetch(endpoint);
