@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- import cdns -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.6.0/Chart.min.js"></script>
+  <title>LiveFeed CDN</title>
+</head>
+
+<body>
+  <script src="./scripts.js" defer></script>
+
+
+  <!-- chart element -->
+  <div class="chartContainer">
+    <div class="chartDropDown">
+      <label for="chartTypes">Chart Style</label>
+
+      <select name="chartTypes" id="chartTypes">
+        <option value="Bar" selected>Bar</option>
+        <option value="Pie" >Pie</option>
+        
+      </select>
+    </div>
+    <canvas id="myChart"></canvas>
+  </div>
+</body>
+
+</html>
