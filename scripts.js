@@ -55,7 +55,7 @@ document.querySelector("#chartTypes").addEventListener("change", () => {
   newChart();
 });
 
-Chart.defaults.global.defaultFontFamily = "Lato";
+// Chart.defaults.global.defaultFontFamily = "Lato";
 Chart.defaults.global.defaultFontSize = 14;
 Chart.defaults.global.defaultFontColor = "#777";
 
