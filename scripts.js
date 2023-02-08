@@ -10,7 +10,7 @@ const newChart = () => {
 
 // data fetch and cleanup
 const url =
-  "https://thrillshare-cmsv2.services.thrillshare.com/api/v2/s/108979/live_feeds?page_size=5";
+  "https://thrillshare-cmsv2.services.thrillshare.com/api/v2/s/108979/live_feeds?page_size=50";
 
 const fetchData = async (endpoint) => {
   const res = await fetch(endpoint);
@@ -20,8 +20,11 @@ const fetchData = async (endpoint) => {
 const cleanData = (rawData) => {
   console.log(rawData)
   let lf_cleanData = {};
+  const currentMonth = new Date().getMonth() + 1
   const currentYear = new Date().getFullYear()
   rawData.forEach((post) => {
+    let postMonth = parseInt(post.time.split("-")[1])
+    console.log(postMonth)
     let postYear = parseInt(post.time.split("-")[0])
     if (currentYear == postYear) {
        if (lf_cleanData[post.author_name]) {
