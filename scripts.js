@@ -10,7 +10,7 @@ const newChart = () => {
 
 // data fetch and cleanup
 const url =
-  "https://thrillshare-cmsv2.services.thrillshare.com/api/v2/s/108979/live_feeds?page_size=200";
+  "https://thrillshare-cmsv2.services.thrillshare.com/api/v2/s/108979/live_feeds?page_size=5";
 
 const fetchData = async (endpoint) => {
   const res = await fetch(endpoint);
@@ -51,8 +51,9 @@ fetchData(url)
 // chart writing
 
 document.querySelector("#chartTypes").addEventListener("change", () => {
-  userOptions.type = document.querySelector("#chartTypes").value;
+  chartSpec = document.querySelector("#chartTypes").value;
   newChart();
+  console.log(chartSpec)
 });
 
 // Chart.defaults.global.defaultFontFamily = "Lato";
