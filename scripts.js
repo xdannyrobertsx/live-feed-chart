@@ -1,7 +1,12 @@
 // variables
+const LIVE_FEED_DATA = new Object();
+
 
 const newChart = () => {
   liveFeedChart.destroy();
+
+  userOptions.data.labels = LIVE_FEED_DATA.names
+  userOptions.data.datasets[0].data = LIVE_FEED_DATA.postData
 
   liveFeedChart = new Chart(myChart, userOptions);
   
@@ -9,8 +14,8 @@ const newChart = () => {
 };
 
 // data fetch and cleanup
-const url =
-  "https://thrillshare-cmsv2.services.thrillshare.com/api/v2/s/108979/live_feeds?page_size=200";
+const url = "./data.json"
+// const url = "https://thrillshare-cmsv2.services.thrillshare.com/api/v2/s/108979/live_feeds?page_size=200"
 
 const fetchData = async (endpoint) => {
   const res = await fetch(endpoint);
@@ -20,8 +25,11 @@ const fetchData = async (endpoint) => {
 const cleanData = (rawData) => {
   console.log(rawData)
   let lf_cleanData = {};
+  const currentMonth = new Date().getMonth() + 1
   const currentYear = new Date().getFullYear()
   rawData.forEach((post) => {
+    let postMonth = parseInt(post.time.split("-")[1])
+    console.log(postMonth)
     let postYear = parseInt(post.time.split("-")[0])
     if (currentYear == postYear) {
        if (lf_cleanData[post.author_name]) {
@@ -41,8 +49,8 @@ const cleanData = (rawData) => {
 fetchData(url)
   .then((res) => cleanData(res.live_feeds))
   .then((lf_object) => {
-    userOptions.data.labels = Object.keys(lf_object);
-    userOptions.data.datasets[0].data = Object.values(lf_object);
+    LIVE_FEED_DATA.names = Object.keys(lf_object);
+    LIVE_FEED_DATA.postData = Object.values(lf_object);
     newChart();
   });
 
@@ -51,8 +59,9 @@ fetchData(url)
 // chart writing
 
 document.querySelector("#chartTypes").addEventListener("change", () => {
-  userOptions.type = document.querySelector("#chartTypes").value;
+  chartSpec = document.querySelector("#chartTypes").value;
   newChart();
+  console.log(chartSpec)
 });
 
 // Chart.defaults.global.defaultFontFamily = "Lato";
@@ -66,11 +75,11 @@ let chartType = "horizontalBar";
 let userOptions = {
   type: chartType,
   data: {
-    labels: ["No Data Available"],
+    labels: LIVE_FEED_DATA.names,
     datasets: [
       {
         label: "Live Feed Posts",
-        data: [0],
+        data: LIVE_FEED_DATA.postData,
         backgroundColor: "#078287",
         borderWidth: 1,
         borderColor: "#777",
@@ -127,4 +136,6 @@ let userOptions = {
   
 };
 
+LIVE_FEED_DATA.names = ["No Data Available"]
+LIVE_FEED_DATA.postData = [0]
 let liveFeedChart = new Chart(myChart, userOptions);
