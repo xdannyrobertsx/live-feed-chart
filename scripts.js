@@ -9,8 +9,8 @@ const newChart = () => {
 };
 
 // data fetch and cleanup
-const url =
-  "https://thrillshare-cmsv2.services.thrillshare.com/api/v2/s/108979/live_feeds?page_size=50";
+const url = "./data.json"
+// const url = "https://thrillshare-cmsv2.services.thrillshare.com/api/v2/s/108979/live_feeds?page_size=200"
 
 const fetchData = async (endpoint) => {
   const res = await fetch(endpoint);
@@ -55,7 +55,7 @@ fetchData(url)
 
 document.querySelector("#chartTypes").addEventListener("change", () => {
   chartSpec = document.querySelector("#chartTypes").value;
-  newChart();
+  // newChart();
   console.log(chartSpec)
 });
 
