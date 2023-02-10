@@ -1,7 +1,12 @@
 // variables
+const LIVE_FEED_DATA = new Object();
+
 
 const newChart = () => {
   liveFeedChart.destroy();
+
+  userOptions.data.labels = LIVE_FEED_DATA.names
+  userOptions.data.datasets[0].data = LIVE_FEED_DATA.postData
 
   liveFeedChart = new Chart(myChart, userOptions);
   
@@ -44,8 +49,8 @@ const cleanData = (rawData) => {
 fetchData(url)
   .then((res) => cleanData(res.live_feeds))
   .then((lf_object) => {
-    userOptions.data.labels = Object.keys(lf_object);
-    userOptions.data.datasets[0].data = Object.values(lf_object);
+    LIVE_FEED_DATA.names = Object.keys(lf_object);
+    LIVE_FEED_DATA.postData = Object.values(lf_object);
     newChart();
   });
 
@@ -55,7 +60,7 @@ fetchData(url)
 
 document.querySelector("#chartTypes").addEventListener("change", () => {
   chartSpec = document.querySelector("#chartTypes").value;
-  // newChart();
+  newChart();
   console.log(chartSpec)
 });
 
@@ -70,11 +75,11 @@ let chartType = "horizontalBar";
 let userOptions = {
   type: chartType,
   data: {
-    labels: ["No Data Available"],
+    labels: LIVE_FEED_DATA.names,
     datasets: [
       {
         label: "Live Feed Posts",
-        data: [0],
+        data: LIVE_FEED_DATA.postData,
         backgroundColor: "#078287",
         borderWidth: 1,
         borderColor: "#777",
@@ -131,4 +136,6 @@ let userOptions = {
   
 };
 
+LIVE_FEED_DATA.names = ["No Data Available"]
+LIVE_FEED_DATA.postData = [0]
 let liveFeedChart = new Chart(myChart, userOptions);
