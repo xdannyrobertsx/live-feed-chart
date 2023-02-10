@@ -26,13 +26,15 @@ const fetchData = async (endpoint) => {
   return await res.json();
 };
 
+// need to rewrite the following
+// need to rewrite the following
+// need to rewrite the following
 const cleanData = (rawData) => {
   let lf_cleanData = new Object();
   const currentMonth = new Date().getMonth() + 1
   const currentYear = new Date().getFullYear()
   rawData.forEach((post) => {
     let postMonth = parseInt(post.time.split("-")[1])
-    console.log(postMonth)
     let postYear = parseInt(post.time.split("-")[0])
     if (currentYear == postYear) {
        if (lf_cleanData[post.author_name]) {
