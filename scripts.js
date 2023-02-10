@@ -3,13 +3,17 @@ const LIVE_FEED_DATA = new Object();
 
 
 const newChart = () => {
+  // destroying old chart
   liveFeedChart.destroy();
 
+// updating user object
   userOptions.data.labels = LIVE_FEED_DATA.names
   userOptions.data.datasets[0].data = LIVE_FEED_DATA.postData
 
+  //chart creation
   liveFeedChart = new Chart(myChart, userOptions);
   
+  // styling
   liveFeedChart.canvas.parentNode.style.width = '1200px';
 };
 
@@ -23,8 +27,7 @@ const fetchData = async (endpoint) => {
 };
 
 const cleanData = (rawData) => {
-  console.log(rawData)
-  let lf_cleanData = {};
+  let lf_cleanData = new Object();
   const currentMonth = new Date().getMonth() + 1
   const currentYear = new Date().getFullYear()
   rawData.forEach((post) => {
@@ -136,6 +139,4 @@ let userOptions = {
   
 };
 
-LIVE_FEED_DATA.names = ["No Data Available"]
-LIVE_FEED_DATA.postData = [0]
 let liveFeedChart = new Chart(myChart, userOptions);
