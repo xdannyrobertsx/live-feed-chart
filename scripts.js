@@ -1,20 +1,9 @@
 // variables
 const LIVE_FEED_DATA = new Object();
+const currentMonth = new Date().getMonth() + 1;
+const currentYear = new Date().getFullYear();
 
-
-const newChart = () => {
-  liveFeedChart.destroy();
-
-  userOptions.data.labels = LIVE_FEED_DATA.names
-  userOptions.data.datasets[0].data = LIVE_FEED_DATA.postData
-
-  liveFeedChart = new Chart(myChart, userOptions);
-  
-  liveFeedChart.canvas.parentNode.style.width = '1200px';
-};
-
-// data fetch and cleanup
-const url = "./data.json"
+const url = "./data.json";
 // const url = "https://thrillshare-cmsv2.services.thrillshare.com/api/v2/s/108979/live_feeds?page_size=200"
 
 const fetchData = async (endpoint) => {
@@ -23,27 +12,56 @@ const fetchData = async (endpoint) => {
 };
 
 const cleanData = (rawData) => {
-  console.log(rawData)
-  let lf_cleanData = {};
-  const currentMonth = new Date().getMonth() + 1
-  const currentYear = new Date().getFullYear()
-  rawData.forEach((post) => {
-    let postMonth = parseInt(post.time.split("-")[1])
-    console.log(postMonth)
-    let postYear = parseInt(post.time.split("-")[0])
-    if (currentYear == postYear) {
-       if (lf_cleanData[post.author_name]) {
-        lf_cleanData[post.author_name] += 1;
-      } else {
-        lf_cleanData[post.author_name] = 1;
+  LIVE_FEED_DATA.rawData = rawData;
+  const unsortedArray = filterData(rawData, LIVE_FEED_DATA.chartType);
+  const sortedArray = Object.entries(unsortedArray).sort((a, b) => b[1] - a[1]);
+  const sortedObject = Object.fromEntries(sortedArray);
+  return sortedObject;
+};
+
+const filterData = (postArr, range) => {
+  const lf_cleanData = new Object();
+  postArr.forEach((post) => {
+    let postMonth = parseInt(post.time.split("-")[1]);
+    let postYear = parseInt(post.time.split("-")[0]);
+
+    if (range == "year") {
+      if (currentYear == postYear) {
+        if (lf_cleanData[post.author_name]) {
+          lf_cleanData[post.author_name] += 1;
+        } else {
+          lf_cleanData[post.author_name] = 1;
+        }
+      }
+    } else if (range == "month") {
+      if (currentMonth == postMonth) {
+        if (lf_cleanData[post.author_name]) {
+          lf_cleanData[post.author_name] += 1;
+        } else {
+          lf_cleanData[post.author_name] = 1;
+        }
       }
     }
-
   });
-  let sortedArray = Object.entries(lf_cleanData).sort((a, b) => b[1] - a[1]);
-  let lf_cleanData_sorted = Object.fromEntries(sortedArray);
-  console.log(lf_cleanData_sorted);
-  return lf_cleanData_sorted;
+  return lf_cleanData;
+};
+
+const newChart = () => {
+  // destroying old chart
+  liveFeedChart.destroy();
+
+  // updating user object
+  let newChartData = cleanData(LIVE_FEED_DATA.rawData);
+  LIVE_FEED_DATA.names = Object.keys(newChartData);
+  LIVE_FEED_DATA.postData = Object.values(newChartData);
+  userOptions.data.labels = LIVE_FEED_DATA.names;
+  userOptions.data.datasets[0].data = LIVE_FEED_DATA.postData;
+
+  //chart creation
+  liveFeedChart = new Chart(myChart, userOptions);
+
+  // styling
+  // liveFeedChart.canvas.parentNode.style.width = "1200px";
 };
 
 fetchData(url)
@@ -58,10 +76,13 @@ fetchData(url)
 
 // chart writing
 
-document.querySelector("#chartTypes").addEventListener("change", () => {
-  chartSpec = document.querySelector("#chartTypes").value;
+const chartSelect = document.querySelector("#chartTypes");
+LIVE_FEED_DATA.chartType = chartSelect.value;
+
+chartSelect.addEventListener("change", () => {
+  LIVE_FEED_DATA.chartType = chartSelect.value;
   newChart();
-  console.log(chartSpec)
+  console.log(LIVE_FEED_DATA.chartType);
 });
 
 // Chart.defaults.global.defaultFontFamily = "Lato";
@@ -108,7 +129,6 @@ let userOptions = {
         bottom: 0,
         top: 0,
       },
-      
     },
     tooltips: {
       enabled: true,
@@ -116,26 +136,25 @@ let userOptions = {
     responsive: true,
     maintainAspectRatio: true,
     scales: {
-      yAxes: [{
-        ticks: {
-          beginAtZero: true,
-        }
-      }]
+      yAxes: [
+        {
+          ticks: {
+            beginAtZero: true,
+          },
+        },
+      ],
     },
     plugins: {
       datalabels: {
-        anchor: 'end',
-        align: 'top',
+        anchor: "end",
+        align: "top",
         formatter: Math.round,
         font: {
-          weight: 'bold'
-        }
-      }
-    }
+          weight: "bold",
+        },
+      },
+    },
   },
-  
 };
 
-LIVE_FEED_DATA.names = ["No Data Available"]
-LIVE_FEED_DATA.postData = [0]
 let liveFeedChart = new Chart(myChart, userOptions);
